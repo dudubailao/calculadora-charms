@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Charms</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    h1 { text-align: center; }
+    .container { background: white; padding: 20px; max-width: 800px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 15px; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+    .resultado { margin-top: 30px; }
+    .charm-icon { width: 32px; height: 32px; vertical-align: middle; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Charms</h1>
+    <label for="vidaMax">Vida Máxima:</label>
+    <input type="number" id="vidaMax" value="11000">
+    <label for="manaMax">Mana Máxima:</label>
+    <input type="number" id="manaMax" value="16300">
+    <label for="attackValue">Attack Value:</label>
+    <input type="number" id="attackValue" value="503">
+    <label for="vidaCriatura">Vida da Criatura:</label>
+    <input type="number" id="vidaCriatura" value="9400">
+    <label for="fraqueza">Fraqueza Elemental (%):</label>
+    <input type="number" id="fraqueza" value="100">
+    <label for="charm">Escolha o Charm:</label>
+    <select id="charm">
+      <option value="overpower">Overpower</option>
+      <option value="overflux">Overflux</option>
+      <option value="elementais">Elementais</option>
+      <option value="lowblow">Low Blow</option>
+      <option value="savageblow">Savage Blow</option>
+    </select>
+    <button onclick="calcularDano()">Calcular Dano</button>
+    <div class="resultado" id="resultado"></div>
+  </div>
+  <script>
+    const charmIcons = {
+      overpower: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV/TSkUrCnaQ4pChOtlFRRylikWwUNoKrTqYXPoFTRqSFBdHwbXg4Mdi1cHFWVcHV0EQ/ABxdnBSdJES/5cUWsR4cNyPd/ced+8AoVllqhmYA1TNMtKJuJjLr4rBV/RjCEAAEYmZejKzmIXn+LqHj693MZ7lfe7PMaAUTAb4ROI5phsW8QbxzKalc94nDrOypBCfE08YdEHiR67LLr9xLjks8MywkU3PE4eJxVIXy13MyoZKPE0cVVSN8oWcywrnLc5qtc7a9+QvDBW0lQzXaY4igSUkkYIIGXVUUIWFGK0aKSbStB/38Eccf4pcMrkqYORYQA0qJMcP/ge/uzWLU5NuUigO9LzY9scYENwFWg3b/j627dYJ4H8GrrSOv9YEZj9Jb3S06BEwuA1cXHc0eQ+43AFGnnTJkBzJT1MoFoH3M/qmPDB8C/Stub2193H6AGSpq+Ub4OAQGC9R9rrHu3u7e/v3TLu/H0xRcpftyY3pAAAABmJLR0QAMwAAAMyNEPeyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AsQABgF43s5FwAAApFJREFUWMPdV0FrE0EYfakDm0Nxt0iWig2KeEjwZMCbQi6CQkFKRdEcFVrx0D+wx/yBntQfEEQwlGKwPQoGPAj2JPHgwZJKQrfiRvaQhZX1kMx0dmd2dzbbevBBDpls9r3vvW++2QX+QwTTjxIKJ0TI0Ll5DwCw/OGN0v1JXlJKOCtmcSB4fv02ysX52Av6YxcA8PTTbioHmYVchsqCeSxg4KI73EdNN/F5dBgkiSBZLOfJ+2MX5eI8I+709ibZV6+xa6pnzwFAoggVAQGfM7WXVt3p7WHLOTi+ugdohh66QZITc1kbgGZ/6/xlRv7+3fbks7YOAPCcEW4sXgy5UNNNyLZnIUv1fM48uXX/CVtvNlax+boDYOJEd7iP3u+fNAqBk2QhpznLUCIaAMBqtdEsEmz6Z5gTVIAsijkVch5bzkE48+0dVq1m6CgRDdbYxwb5IzSjDJl6gOU9zTpaPRVCv9u+x1yI6wUlAZUFE48/vmV5W602Nh4ss99t3xP+Uz8aoNlYDa3JnEgUwG+5KKxWmznBOyCDbFekNiEl749dVGCG8i4RDbbvwWq1lQScxmGEEtGgGTo8ZxSqlPXK2jrbjklQ6oGvvw6FNTrt+KkXnYAqUN4FK8YS6i9foFkkoWqjxLLq6UACwGZCmoDC9CjNjSTyzHNgxVhC/WjAhoznjKQ9IEPcOM58GDER3BygQuigynIWKAl49f0LrixeEPohbRidaBMmibB9D13XnlT/6JmQfVz1Ssdxo1wNLTy8dBXfhj+ErsfdO1LyJPtVH0oFEXSsxjWeSvZZn4oFETIxFBLy3AIAIKjpZuLZrrLt8r4XBAAQ50Z00KSR53k1C6YPFgI4y5Xun+fdMDjF981/h78TL1uxsGJpqwAAAABJRU5ErkJggg==",
+      overflux: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV/TSkUrCnaQ4pChOtlFRRylikWwUNoKrTqYXPoFTRqSFBdHwbXg4Mdi1cHFWVcHV0EQ/ABxdnBSdJES/5cUWsR4cNyPd/ced+8AoVllqhmYA1TNMtKJuJjLr4rBV/RjCEAAEYmZejKzmIXn+LqHj693MZ7lfe7PMaAUTAb4ROI5phsW8QbxzKalc94nDrOypBCfE08YdEHiR67LLr9xLjks8MywkU3PE4eJxVIXy13MyoZKPE0cVVSN8oWcywrnLc5qtc7a9+QvDBW0lQzXaY4igSUkkYIIGXVUUIWFGK0aKSbStB/38Eccf4pcMrkqYORYQA0qJMcP/ge/uzWLU5NuUigO9LzY9scYENwFWg3b/j627dYJ4H8GrrSOv9YEZj9Jb3S06BEwuA1cXHc0eQ+43AFGnnTJkBzJT1MoFoH3M/qmPDB8C/Stub2193H6AGSpq+Ub4OAQGC9R9rrHu3u7e/v3TLu/H0xRcpftyY3pAAAABmJLR0QAMwAAAMyNEPeyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AsQABYroS4ZVgAAAqVJREFUWMPFV11rGkEUPRsW1ocQN8SKxVWkSHHxyUpeAn1rIQ1CkZaQjx8Q0h9R/BUN/QFqCilCCSaQvLQNvoQ0tCD6UIJdtyTYFteyDwoF+2Bn3NXddb9CDwg7c2fmnLn3zp0R+M9gXMwZ+riWo0lDANhbXjU07p4fu1qb8Upshn+CGLcCqJv3llcRC8wDANp9lQ6IBeaRWgzTdrPbAQDa1+x2kPt4MFOEkXF4+PC5rkNLDACP797DYeOStnNiBs1uB6nFMO1PRqIot+oothuWIthZ5GS32t1pyUk7J2am+u2AnTVA62ZCUFFkbIQkAMDgzwo4PjhFPuk1VwK0LiWoKDIKOxJOi1kIgQtwfJDayPdA6dn2wJzdgRVFRkWRUaqOyO+w3JQd6pHjEMzZJS9VJZSqEl6tj8g5PojUs5F9v1VHYUcynLsdE62Kl7EAs/hpyQkIeeF1nAry3QNWIPlgdnIcCyC713ohzwvYWovj0fbF1AKnxSyEUNj1Biw9cHJ9hZyYMbV/frPiidxIAGNwqYzL7dvxNz1q6hH91tp9z4E8L2D/ZxwcW8NA6YFja+DYGuR+Fhxbs53IjgWcXF8hGYnq+gix3M/iTP0xLlw+nQLLMJDyK4TCNP5uiF0fQ1L7jXD/6S0JaPdVJCNR5HlBR06Sz4jYdR0wCwO5FQdKj/5mofH7l/freHI32oT8evPd86uYdUKeEzNYf38AABAXlrCZSCMPYGstjlJV8l+A9i1YvqybjttIpPHuxRNXYZiblXztvoqzm2+6xcSFJQBAuVVHMhLV5cRA6SEZieLllw+eTwGze35sSk5ARDh9CTn+X2DwyNBhM5HWtbUe+NTrmHIxLpN3OCnCKta3IUAnwi25VwE0PA+C4UlC2xwM/MHQ7Zp/AR2/HBIWosN8AAAAAElFTkSuQmCC",
+      elementais: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAORaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0MzUyLCAyMDIwLzAxLzMwLTE1OjUwOjM4ICAgICAgICAiPg0KICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPg0KICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6YWExNGVkNTMtNDE5NC02NTQ1LTg0NjQtNTE2OWQ3NzIzNDU0IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjUyRUMzMjBCN0YxOTExRUFBOUVDQjRCQzc0QUY4QkVEIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjUyRUMzMjBBN0YxOTExRUFBOUVDQjRCQzc0QUY4QkVEIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE3IChXaW5kb3dzKSI+DQogICAgICA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0ODFmNWEyZC0wY2UzLWJkNGMtYWExYi0wNjRkMDQ4MTVjNjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6YWExNGVkNTMtNDE5NC02NTQ1LTg0NjQtNTE2OWQ3NzIzNDU0IiAvPg0KICAgIDwvcmRmOkRlc2NyaXB0aW9uPg0KICA8L3JkZjpSREY+DQo8L3g6eG1wbWV0YT4NCjw/eHBhY2tldCBlbmQ9InIiPz5PcrvUAAADhklEQVRYR7WX30sUURTHz4ShkeAG62KgFEWiRERWlGEgRBQkRRQo+RA9RD8esj9A6F/IIHqMHiyDfgkGRURCCxZRPkQoZFEoJLqRloFLwTbf4z3jmbt3ZnaLPnC9d+7s7vd7zj33zuiRolAomFHpeJ4X9yUv6Tf/2oAvjK5wbedBaqiq5jmbjud30MWaKMuAHe3Q3uNmFE2SiVgDfY17zIjo4vsRjhboiJvWZMwozPi3GZpcXODxuVeP0AVaWifWgI7YjlaEh8ZGubfpaN7G/ZMvH7nXJhINiLArYgBxEb4/N0XDH+7xmHKD3PUdeEqzv/M8PrVld5GJWAMQnzh83swsgXQKWnzkZ44Gxm9S3/YLfA3R7MIsDb88ySZkDiYujT7j6/7JMXSBiRX81wBxV2FBVFqUeGWqhurTGWqrrqX2XTeop3+O54FkwEXIgCARQ+z62xfcMEaDEJrGvhZkGeJwGhDkB2orKrnXQtO/FoM1F6Zyy0vlYuz7VzNaJtYAmMj/oJ7XV7idvb2D8nPzNPDpHQ0/rA7WGXMizjWAe90pvk6iyIDsXSCRA6w1BHse72MBjWTKFsf3URfZ6c8c/Zv5GWqpyYQKPzEDravT1NV0goUBTOjopPhEXIN7Ih5FyI0hOPH2r90QVD3vd397Ue5ukQGAZQD8OZUFuQ8j2IL+9vM3mxecOc4M4MMa/EjX+s28vdoPLQRbTH5cczRVv/QZkzEYQ2urW0fdDc1Fz5OQAePKM4cF7185UgFMuEABInIYgzCbwFngF64NTPgEJiJrQGdB0iu9BuLYKZL2oFDN8ewyoYl6FvAlagF1gIMIuLYYn4gPKnhOL4k+E7AbcE/vBtQC7iXuAk3dyiruZduxeLYzJA7hKHEXTgOSCf0URJoRaW/nKr7GmrO4n3IRxxJhS+pmi9tnQUkZ0AdSiPSRkLiI2Q0g9Sjusg8iICKUPsYd14JfZL1bz3C6tTiAmDSIoknk6NGEkmuAHz4+WhzYBYYGRMhE7OnIZYlBWUWIlGtcBaaFtajM25RkACkWED0eTLY4IreFRfTyplaOWpqm5AzgTQdpl9RHieP6dGNLIIwWR3lLYEgSB0nCQrBGQKdH3g/xHmi/00WJY2ynOIlEA7f8tx+NrnKgxfE2vXHwKs+XStwSeObfKgbCWhzCIv4vxGXAjJYfnYKOWlNu+kHiv8//F6I/UI12p3dXOzQAAAAASUVORK5CYII=",
+      lowblow: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAgCAYAAAAWl4iLAAABrWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDIgNzkuYTZhNjM5NiwgMjAyNC8wMy8xMi0wNzo0ODoyMyAgICAgICAgIj4KIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjUuOSAoV2luZG93cykiLz4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz6mvfZ1AAADjUlEQVRIiWL8//8/AyMj438GLOD///+M2MQJAgYGBgAAAAD//2IBGbrFNgSrWpiFJFvAwMAAAAAA//9igTE0BMUwJGEWgiwgyXAGBgYAAAAA//9iQubMv3yCofrMbgblSclgGmTZ8gdXGaJlNXEGF1bAwMAAAAAA//9CMRgZrDi2giH5+GYGGwl5sDBJhjMwMAAAAAD//8Iw+MXvH2B6omsOw4E5qQwrHlwl3XAGBgYAAAAA//+CG3zj/SuGRF0LFMmJJdsZDuSKMRx4ehduuBG/GGHDGRgYAAAAAP//wh4UF7eCqdd/fjJMXMzGsCKDj+Hnh49gwzX5hAk7l4GBAQAAAP//YgLFts/hNWgGb4QzQYZHzPjEkB/7Cy5GMEgYGBgAAAAA///CcLENjyiDw+RXYINEWdjBYuBw1/eHu5qg4QwMDAAAAAD//8KZKkAGEQI4w5uBgQEAAAD//8JjsDeqL1JmM+T3eKK4Gmd4MzAwAAAAAP//QjEYljIkWDnwOvbJm1f4g4SBgQEAAAD//8LqYhV2XoYIqwiG/N1T4OGMDEBiyIZjBAkDAwMAAAD//wIbjDVloAHk4CAIGBgYAAAAAP//wnAxSkaBpmdCQYIR1gwMDAAAAAD//8IZeZbcIgwRmYvBLkQJDqRIRQYowcHAwAAAAAD//4IbjC84jn99A6aRIxVb2MMBAwMDAAAA///C6mJQcPhoGoIjEVRegLL0kS+vUSIVBpAjEQ4YGBgAAAAA//9CMRjd1SBXwcoLUEkHMhwXQAlnBgYGAAAAAP//whnGMFfDDQeVdKBi9NgKcJGKDcDDmYGBAQAAAP//gldNyK5GrwdhhtcUbGBgYNgAdvmB0yA2pNzGAAwMDAAAAAD//8KdpZFcDTMcBGCGggx0MA0AF1YY4czAwAAAAAD//8JqMHJYYzMcPX3DxOHhzMDAAAAAAP//wuliXIZjlCNopSA4nBkZ/wMAAAD//8IbFNgMh2ec2F8QS7BlGAYGBgAAAAD//8JrMC4ATs8zPjGsmB6LXQkDAwMAAAD//wI3sQgB5FQCamtsuX4ezAalFBiQERFjOPLiIcP1T28Zzn18xQAAAAD//8JIbriCBGY4KEjYBfjB4jK4NDAwMAAAAAD//yLKYGTDQQU7QcDAwAAAAAD//yLaYGTDYXxQCsAKGBgYAAAAAP//IiqMcWrGVUszMDAAAAAA//8DAPGUK/dI8JsWAAAAAElFTkSuQmCC",
+      savageblow: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAADZUlEQVRYhbVXTUsbQRh+JiymBbEWkwUhgngySCk9BHpoITkELJRWoRTBUw65lEr9AQulkGMPlRw8KOQgggehEdpTDqY00IPQ4kHioQRLFlI2ET/IwUBgekhmdmZ2NlGTPhDIzsf7PPN+zLtLKKUYBIQQboBSSm6639AZUuFnmBBCvzx9BQCoXjVBCKHq2n52DdWQH5HOMNsze99EtdbEemzeQ6jarV41JRuGakiH3y/eaEWwPYVaBcnJGRRqFazH5jF1Z9Rjg9meRWc9g6EuECf9RKgesxsOCgAXoSMu1CqwGw5SDx4DAEp//8gCxEU6FAQRunlRRD+bjNwjAABKzTqKB3kAgJVII7O/ASuR5vPLU1FsV8vePSsmrFxHBBPEkEl1ImflvNoD7M/xmSOpZ+Tx2AIy+xuSweWpKAA3/iKR3XD42kyKIJMiiGf1XtV6gCFsBLGWfCuNFWoVfHiUwPtf+3xMFGblKD8te3a9QxEJeZM8QCklz7/v8oGl6TnEYwt49/GZu+rwq7Rp2riLH7aSrA9fAgDWtkawtjWiJU9OzuD1t11pm+QBFoadkyPgcA/1thwzlmgsk9WMDxtBBMfvAQBKJ0ecnEEl9wiQvJDtGIhnXeNMRK7r9kjI7JxyMw1rNc9dvKOQs/Ho2ATKl6coX57i54Xj3oRibTMv2A0H8ayD4ooJHO4BGMHnc1uqEDH+TKBK3g8Bv4mwEcTieERriFWIeHqRHHArgHmNITo2wU/fUwCLZdgI9j0NO/3S9BysHOVlJ4ZAvHxEBABvYynUKmidX6DebqHebnEC1QvFgzw/PU8+5hUf8u1qWequ2iS0Gw4voc5JWu6kUJJWIi1l/s7JkRSSfuTcA71g5SgynxZQatb5WNgI8t8g5NcSAADWah7FzbRnXCIXwnFdcl8BkZCJxfEI4lnHbSRdEYwEAFrnFy55t2HdhJwLUK9jAKi3W9JzJGTCWs1Lbmf3wm3JgR7NKBIyASHufKyLYZADmhCobVkHnnADkksCdGHoSX6LhOspQIcno2GeiHbDce/5IZEDSg6ITSk5OdN5vermgdjbh0UOXPMeAPBfyIEeVSAmo5Vzu9kwybUCdO/9YvkNk1wrQMTxmePbRodB7itA5wWRmK0ZlBwASK/Pc91X0LCIGf4BlUp8DlMwDuEAAAAASUVORK5CYII="
+    };
+    const charms = {
+      overpower: {
+        tipo: "Físico",
+        danoBase: 550,
+        limitacao: vj => Math.min(0.08 * vc(), 0.05 * vj.vidaMax)
+      },
+      overflux: {
+        tipo: "Físico",
+        danoBase: 407.5,
+        limitacao: vj => Math.min(0.08 * vc(), 0.025 * vj.manaMax)
+      },
+      elementais: {
+        tipo: "Elemental",
+        danoBase: 470,
+        limitacao: vj => 0.05 * vc()
+      },
+      lowblow: {
+        tipo: "Crítico",
+        formula: vj => vj.attackValue * 0.4
+      },
+      savageblow: {
+        tipo: "Crítico",
+        formula: vj => vj.attackValue * 0.4
+      }
+    };
+    function vc() {
+      return parseFloat(document.getElementById("vidaCriatura").value);
+    }
+    function calcularDano() {
+      const vidaMax = parseFloat(document.getElementById("vidaMax").value);
+      const manaMax = parseFloat(document.getElementById("manaMax").value);
+      const attackValue = parseFloat(document.getElementById("attackValue").value);
+      const charmSelecionado = document.getElementById("charm").value;
+      const charm = charms[charmSelecionado];
+      const dadosJogador = { vidaMax, manaMax, attackValue };
+      const iconPath = charmIcons[charmSelecionado];
+      let html = `<h2><img src="${iconPath}" class="charm-icon">Resultado para: ${charmSelecionado.toUpperCase()}</h2>`;
+      if (charm.tipo === "Crítico") {
+        const danoCritico = charm.formula(dadosJogador).toFixed(2);
+        html += `<p>Tipo: ${charm.tipo}</p>`;
+        html += `<p>Dano estimado: <strong>${danoCritico}</strong> (Attack Value x 0.4)</p>`;
+      } else {
+        const danoFinal = Math.min(charm.danoBase, charm.limitacao(dadosJogador)).toFixed(2);
+        html += `<p>Tipo: ${charm.tipo}</p>`;
+        html += `<p>Dano Base: ${charm.danoBase}</p>`;
+        html += `<p>Dano Aplicado (com limitação): <strong>${danoFinal}</strong></p>`;
+      }
+      document.getElementById("resultado").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
